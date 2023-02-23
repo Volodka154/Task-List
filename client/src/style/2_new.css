@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap');
+body {
+    font-family: tahoma;
+    color: #282828;
+    font-size: 20px;
+}
+
+/* Главная наружняя форма */
+.form{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    margin-top: 25px;
+    min-width: 600px;
+    height: 450px;
+    padding: 20px;
+    text-align: left;
+}
+
+/* Шапка с названием и выходом */
+.form-change{
+    margin-top: -20px;
+    margin-bottom: 20px;
+    margin-left: -20px;
+    margin-right: -20px;
+}
+
+/* Ввод названия заметки */
+.row{
+    flex-direction: row;
+    text-align: center;
+}
+
+/* Область таблицы */
+.form-scroll{
+    margin: 15px 5px;
+    background-color: #16c0af1a;
+    border-width: 1px;
+    box-sizing: border-box;
+}
+
+/* Границы */
+.form-bordered-text{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #84CF6A;
+}
+
+/* Внутренность */
+.scroll-table-body {
+	overflow-x: auto;
+    height: 83%;
+	max-height: 100%;
+	overflow-x: auto;
+}
+
+/* Задаем только ширину столбца */
+.frst-coll{
+    width: 35%;
+}
+
+/* Задаем еще и разделение между названием и содержанием */
+.frst-col{
+    width: 35%;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-right-color: #83cf6a71;
+}
+
+/* Окно ввода информации */
+.form-input[type=text]{
+    box-sizing: border-box;
+    padding: 5px;    
+    margin: 4px 0px;
+    border-color:  #16c0af7c;
+    font-family: inherit;
+    font-size: inherit;
+    resize: none;
+}
+.form-input:focus{
+    outline-color:  #84CF6A;
+    border-width: 1px;
+    box-shadow: 0 0 3px #16C0B0;
+}
+
+/* Размеры окна ввода названия */
+.form-input1[type=text]{
+    width: 78%;
+    height: 90px;
+    vertical-align: middle;
+}
+
+/* Окно ввода в таблице */
+.form-input2[type=text]{
+    width: 100%;
+    vertical-align: middle;
+}
+
+.main-mini-i{
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+
+.mini-i{
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+.maxi-i{
+    font-size: 37px;
+    height: 40px;
+    width: 40px;
+}
+
+.maxi-i:hover{
+    background-color: #82d5ce;
+}
+.mini-i:hover{
+    background-color: #82d5ce;
+}
+  
+.maxi-i:active{
+    background-color: #77c4be;
+}
+.mini-i:active{
+    background-color: #77c4be;
+}
+  
+
+
+i{
+    border-style: solid;
+    border-width: 1px;
+    background-color: #86e0d7;
+    text-align: center;
+    margin: 5px;
+}
+.ii{
+    border-style: solid;
+    border-width: 1px;
+    background-color: #86e0d7;
+    text-align: center;
+    margin: 5px;
+}
+
+/* Затемнение */
+.exit-back-color:before{
+    content: '';
+    position:fixed;
+    left: 0;
+	top: 0;
+    width:100%;
+    height:100%;
+	opacity: 0.7;
+
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,.7);
+    z-index:999;
+}
+
+/* Окно выхода */
+.exit-comp{
+    z-index: 1000;
+	opacity: 0.95;
+    position:fixed;
+    width: 250px;
+    text-align: center;
+    top: 20%;
+	left: calc(50% - 125px);
+	border: 1px solid #84CF6A;
+    padding: 10px;
+    background-color: #16c0af;
+}
+
+/* Состояние сохранения */
+.exit-save{
+    font-size: 30px;
+    z-index: 1000;
+	opacity: 1;
+    position:fixed;
+    top: 0px;
+	left: 20px;
+}
+
+.exit-but{
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+
+
+/* Кнопка */
+.button-send{
+    background: linear-gradient(30deg, #84CF6A, #16C0B0);
+    border-color: #84CF6A;
+    height: 25px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+
+/* Настройка скролла */
+html {
+    --background: #13bead15;
+    --text: #fff;
+    --gray-300: #84CF6A;
+    --gray-500: #56cc2e;
+
+    /* Official styles (Firefox) */
+    scrollbar-color:
+      var(--gray-300)
+      var(--background);
+    scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: var(--background);
+}
+::-webkit-scrollbar-thumb {
+border-radius: 50px;
+background-color: var(--gray-300);
+border: 10px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+background-color: var(--gray-500);
+}
+
