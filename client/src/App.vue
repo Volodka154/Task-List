@@ -105,7 +105,7 @@ import { computed } from 'vue'
 
 // достать все заметки
 const GET_TASK_AMOUNT = gql`
-  query {
+  query getTask{
     getTask {
       id
       title

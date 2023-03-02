@@ -1,7 +1,9 @@
 const { ApolloServer } = require('apollo-server');
 const mongoose = require('mongoose');
 
-const MONGODB = "mongodb+srv://TestBase:TestBase@cluster0.bpupy0x.mongodb.net/?retryWrites=true&w=majority";
+const MONGODB = "mongodb+srv://TestBase:TestBase@database.a9foczx.mongodb.net/test";
+//const MONGODB = "mongodb://127.0.0.1:25154";
+
 
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
@@ -19,9 +21,6 @@ mongoose.connect(MONGODB, {useNewUrlParser: true})
     .then((res) => {
         console.log(`Server running at ${res.url}`)
     })
-
-//console.log(resolvers.Mutation.createMainTask({title: 'Something'}))
-
 
 
 
