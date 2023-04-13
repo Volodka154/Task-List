@@ -1,8 +1,8 @@
 const {model, Schema} = require('mongoose');
 
 const taskSchema = new Schema({
-    title: {type: String, default: 'Untitled'},
-    done: { type: Boolean, default: false },
+    title: {type: String, default: 'Untitled', required: true},
+    done: {type: Boolean, default: false },
     tasks: []
 });
 

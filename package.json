@@ -1,20 +1,13 @@
 {
-  "name": "task-list-2",
+  "name": "new-task-list",
   "version": "1.0.0",
-  "description": "ссылка подкллючения:\r mongodb+srv://TestBase:<password>@cluster0.bpupy0x.mongodb.net/?retryWrites=true&w=majority",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./server/index.js"
+    "start": "node ./server/index.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@vue/cli": "^5.0.8",
-    "apollo-server": "^3.11.1",
-    "graphql": "^16.6.0",
-    "mongoose": "^6.9.1",
-    "nodemon": "^2.0.20"
-  }
+  "license": "ISC"
 }

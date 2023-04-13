@@ -2,26 +2,30 @@
   <!--Удаление-->
   <div class="exit-back-color">
     <div class="exit-comp">
-        <div><i class="fa-solid fa-xmark exit-but mini-i" v-on:click="delTask(false)"></i></div>
+        <div>
+          <img class="icon mini-icon exit-but" 
+                     src="CloseOutlined.svg"
+                     @click="onClickCancelDeleteBtn"
+                     title="Закрыть">
+        </div>
         <p>Удалить задание с названием "{{ title }}"?</p>
         <button class="button-send"
-                v-on:click="delTask(true)">Удалить</button>
+                v-on:click="onClickConfirmDeleteBtn"
+                >Удалить
+        </button>
         <button class="button-send"
-                v-on:click="delTask(false)">Отменить</button>
+                v-on:click="onClickCancelDeleteBtn"
+                >Отменить
+        </button>
     </div>
   </div>
 </template>
 
 <script>
 import { useMutation } from '@vue/apollo-composable'
-import { gql } from 'graphql-tag';
 
-// удалить главную заметку
-const DELETE_MAIN = gql`
-  mutation DeleteTask($mainId: ID!) {
-    deleteTask(mainID: $mainId)
-  }
-`
+import { DELETE_MAIN } from '../querys/mutations'
+
 export default {
     props: ['ID', 'titles'],
     data(){
@@ -35,16 +39,15 @@ export default {
         }
     },
     methods: {
-        async delTask(ifDeleted){
-          if (ifDeleted){
-            await this.deleteMain({
-              mainId: this.id,
-            })
-          }
+        async onClickConfirmDeleteBtn(){
+          await this.deleteMain({
+            mainId: this.id,
+          })
           this.$emit('click-save', false)
         },
-
+        onClickCancelDeleteBtn(){
+          this.$emit('click-save', false)
+        }
     }
-
 }
 </script>

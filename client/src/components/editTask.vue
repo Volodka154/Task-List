@@ -1,199 +1,196 @@
 <template>
-    <div    class="form form-bordered-text">
+    <div class="form form-bordered-text display-flex">
         <div class="form-change">
-            <table>
+            <table class="table-fixed">
                 <thead>
-                    <th class="th-l">Изменение задания</th>
-                    <th class="th-r"><i class="fa-solid fa-xmark maxi-i" 
-                        v-on:click="exit"
-                        title="Закрыть"></i></th>
+                    <th class="th-main text-align-left">Изменение задания</th>
+                    <th class="th-main text-align-right">
+                        <img class="icon maxi-icon" 
+                             src="CloseOutlined.svg"
+                             @click="onClickExitBtn"
+                             title="Закрыть">
+                    </th>
                 </thead>
             </table>
         </div>
-
         <!--Задание-->
         <div class="row">
             <label>Задание: </label>
-            <i  v-if="!title"
-                class="fa-solid fa-star required-input-field"
-                :class="redWarning"></i>
-            <textarea   class="form-input form-input1"
-                        type="text"
-                        v-model="title">
+            <img v-if="!title"
+                 class="mini-icon required-input-field noHover"  
+                 src="StarFilled.svg"
+                 :class="redWarning">
+            <textarea class="form-input form-input__title"
+                      type="text"
+                      v-model="title">
             </textarea>
         </div>
-        
         <!--Кнопки (добавить удалить)-->
         <div>
             <label>Список задач: </label>
-            <i  class="fa-solid fa-plus maxi-i"
-                v-on:click="addOne"
-                title="Добавить задачу"></i>
-            <i  class="fa-solid fa-minus maxi-i"
-                v-on:click="delOne(indexForDelete)"
-                title="Удалить задачу"></i>
+            <img class="icon maxi-icon margin-left-5" 
+                 src="PlusOutlined.svg"
+                 @click="addOne"
+                 title="Добавить задачу">
+            <img class="icon maxi-icon margin-left-5" 
+                 src="MinusOutlined.svg"
+                 @click="delOne(selectedTaskIndex)"
+                 title="Удалить задачу">
         </div>
-
         <!--Таблица-->
         <div class="form-scroll form-bordered-text">
-            <table>
+            <table class="table-fixed">
                 <thead>
                 <tr>
-                    <th class="frst-colm"></th>
-                    <th class="scnd-colm">Название</th>
-                    <th>Содержание задачи</th>
+                    <th class="th-main frst-colm"></th>
+                    <th class="th-main scnd-colm">Название</th>
+                    <th class="th-main">Содержание задачи</th>
                 </tr>
                 </thead>
-
             </table>
             <div class="scroll-table-body">
-                <table>
+                <table class="table-fixed">
                     <tbody> 
-                    <tr v-for="(task, index) in tasks"
-                        v-bind:key="index"
-                        v-on:click="editIndex(index)"
-                        v-bind:class="deleteThis(indexForDelete,index)"
+                    <tr v-for="(task, index) in copyOfMiniTaskList"
+                        :key="index"
+                        @click="editIndex(index)"
+                        :class="getSubTaskClassName(selectedTaskIndex,index)"
                         >
-                        <td class="frst-colm">
-                            <i class="fa-solid fa-check mini-i"
-                                v-if="task.done"
-                                v-on:click="task.done = !task.done"></i>
-                            <div class="ii mini-i"
-                                v-else
-                                v-on:click="task.done = !task.done">
-                            </div>
+                        <td class="frst-colm td-main">
+                            <img v-if="task.done" 
+                                 class="icon mini-icon"
+                                 src="CheckOutlined.svg"
+                                 @click="task.done = !task.done">
+                            <img v-else 
+                                 class="icon mini-icon"
+                                 @click="task.done = !task.done">
                         </td>
-                        <td class="scnd-colm">
-                            <textarea   class="form-input form-input2"
-                                        type="text"
-                                        v-model="task.title"
-                                        ></textarea>
+                        <td class="scnd-colm td-main">
+                            <textarea class="form-input form-input__stretched"
+                                      type="text"
+                                      v-model="task.title">
+                            </textarea>
                         </td>
-                        <td>
-                            <textarea   class="form-input form-input2"
-                                        type="text"
-                                        v-model="task.text"
-                                        ></textarea>
+                        <td class="td-main">
+                            <textarea class="form-input form-input__stretched"
+                                      type="text"
+                                      v-model="task.text">
+                            </textarea>
                         </td> 
                     </tr>
                     </tbody>
                 </table>            
             </div>
         </div>
-
-
-
         <!-- Состояние загрузки в базу -->
-        <div    v-if="loadTask"
-                class="exit-back-color exit-save">
-                the saving process...
+        <div v-if="isLoadTask"
+             class="exit-back-color exit-save"
+             >the saving process...
         </div>
-
         <!--Кнопки (отправить отменить)-->
-        <div class="th-r">
+        <div class="text-align-right">
             <button class="button-send"
-                    v-on:click="save">Сохранить</button>
+                    v-on:click="onClickSaveBtn"
+                    >Сохранить
+            </button>
             <button class="button-send"
-                    v-on:click="exit">Отменить</button>
+                    v-on:click="onClickExitBtn"
+                    >Отменить
+            </button>
         </div>
-
     </div>
     <!--Выход-->
-    <div    class="exit-back-color"
-            v-if="AttemptToExit">
+    <div class="exit-back-color"
+         v-if="isExitConfirmModalShow">
         <div class="exit-comp">
-                <div><i class="fa-solid fa-xmark exit-but mini-i" 
-                    v-on:click="AttemptToExit = false"
-                    title="Закрыть"></i></div>
-                <p>Отменить все изменения?</p>
-                <button class="button-send"
-                        v-on:click="save">Сохранить</button>
-                <button class="button-send"
-                        v-on:click="exit(true)">Отменить</button>
+            <div>
+                <img class="icon mini-icon exit-but" 
+                     src="CloseOutlined.svg"
+                     @click="isExitConfirmModalShow = false"
+                     title="Закрыть">
+            </div>
+            <p>Отменить все изменения?</p>
+            <button class="button-send"
+                    @click="onClickSaveBtn"
+                    >Сохранить
+            </button>
+            <button class="button-send"
+                    @click="onClickExitBtn(true)"
+                    >Отменить
+            </button>
         </div>
-
     </div>
 </template>
 
 <script>
 import { useMutation } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
+import { EDIT_TASK } from '../querys/mutations'
 
-
-const EDIT_TASK = gql`
-    mutation EditTask($mainId: ID!, $titleTaskInput: TitleTaskInput, $mass: [TitleText]) {
-        editTask(mainID: $mainId, titleTaskInput: $titleTaskInput, mass: $mass)
-    }
-
-`
 export default {
     props: ['ID', 'titles', 'taskss'],
     data(){
-        const { mutate: editMain, loading: loadTask } = useMutation(EDIT_TASK)
+        const { mutate: editMain, loading: isLoadTask } = useMutation(EDIT_TASK)
 
         return{
             editMain,
-            loadTask,
+            isLoadTask,
 
-            indexForDelete: null,
+            selectedTaskIndex: null,
             warning: false,
-            AttemptToExit: false,   // exit Window
+            isExitConfirmModalShow: false,   // exit Window
             id: this.ID,
             title: this.titles,
-            tasks: JSON.parse(JSON.stringify(this.taskss))
+            copyOfMiniTaskList: JSON.parse(JSON.stringify(this.taskss))
         }
     },
     methods:{
         addOne(){
-            if(this.indexForDelete !== null){
-                this.tasks.splice(this.indexForDelete + 1, 0, { title: '', text: '', done: false})
+            if(this.selectedTaskIndex !== null){
+                this.copyOfMiniTaskList.splice(this.selectedTaskIndex + 1, 0, { title: '', text: '', done: false})
             }
             else{
-                this.tasks.push({ title: '', text: '', done: false })
+                this.copyOfMiniTaskList.push({ title: '', text: '', done: false })
             }
         },
         delOne(index){
             if (index !== null){
-                this.tasks.splice(index,1)
-                this.indexForDelete = null
+                this.copyOfMiniTaskList.splice(index,1)
+                this.selectedTaskIndex = null
             }
         },
-        deleteThis(index, ourindex){
-            if(index !== null && ourindex === index){
-                return 'delete-this'
-            }
-        },
-        exit(if_save){
-            this.AttemptToExit = true
+        onClickExitBtn(if_save){
+            this.isExitConfirmModalShow = true
             if(if_save === true){
                 this.$emit('click-save', false)
             }
         },
         editIndex(index){
-            if(this.indexForDelete === index){
-                this.indexForDelete = null
+            if(this.selectedTaskIndex === index){
+                this.selectedTaskIndex = null
             }
             else {
-                this.indexForDelete = index
+                this.selectedTaskIndex = index
             }
         },
-        async save(){
+        async onClickSaveBtn(){
             // только если название введено
             if(this.title){
+                console.log('onClickSaveBtn')
                 // очищаю массив от пустого пространства
-                for(let i = 0; i < this.tasks.length; i++){
-                    if(this.tasks[i].title === '' && this.tasks[i].text === ''){
-                        this.tasks.splice(i, 1)
-                        i--
+                this.copyOfMiniTaskList = this.copyOfMiniTaskList.filter(miniTaskItem => {
+                    // если нет названия для подзадачи, берем и назначаем 10 символов из ее описания
+                    if (!miniTaskItem.title && miniTaskItem.text){
+                        miniTaskItem.title = miniTaskItem.text.substring(0, 10) + '...'
                     }
-                }
+                    return (miniTaskItem.text || miniTaskItem.title)
+                })
                 // введем массив необходимых элементов, чтоб передать его
                 const massiv = []
-                for(let i = 0; i < this.tasks.length; i++){
+                for(let i = 0; i < this.copyOfMiniTaskList.length; i++){
                     massiv.push({
-                        title: this.tasks[i].title,
-                        text: this.tasks[i].text,
-                        done: this.tasks[i].done
+                        title: this.copyOfMiniTaskList[i].title,
+                        text: this.copyOfMiniTaskList[i].text,
+                        done: this.copyOfMiniTaskList[i].done
                     })
                 }
                 await this.editMain({
@@ -201,41 +198,33 @@ export default {
                     titleTaskInput: {
                         title: this.title
                     },
-                    mass: massiv
-                                  
+                    mass: massiv      
                 })
                 this.$emit('click-save')
             }
             else{
-                this.AttemptToExit = false
+                this.isExitConfirmModalShow = false
                 this.warning = true
             }
         },
-
-
+        getSubTaskClassName(index, ourindex){
+            return{
+                'select-this' : index !== null && ourindex === index
+            }
+        },
     },
     computed:{
         redWarning(){
             if(this.warning) {
-                return 'red-warning'
+                return 'red-warning animated flash'
             }
             return ''
         },
-
     }
 }
 </script>
 
-<style>
-.th-l{
-    text-align: left;
-    padding-left: 5px;
-}
-
-.th-r{
-    text-align: right;
-    padding: 0px;
-}
+<style scoped>
 .frst-colm{
     width: 32px;
 }

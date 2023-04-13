@@ -5,9 +5,12 @@ body {
     font-size: 20px;
 }
 
+.display-flex{
+    display: flex;
+}
+
 /* Главная наружняя форма */
 .form{
-    display: flex;
     flex-direction: column;
     margin: 0 auto;
     margin-top: 25px;
@@ -46,14 +49,6 @@ body {
     border-color: #84CF6A;
 }
 
-/* Внутренность */
-.scroll-table-body {
-	overflow-x: auto;
-    height: 83%;
-	max-height: 100%;
-	overflow-x: auto;
-}
-
 /* Задаем только ширину столбца */
 .frst-coll{
     width: 35%;
@@ -68,7 +63,7 @@ body {
 }
 
 /* Окно ввода информации */
-.form-input[type=text]{
+.form-input{
     box-sizing: border-box;
     padding: 5px;    
     margin: 4px 0px;
@@ -84,64 +79,73 @@ body {
 }
 
 /* Размеры окна ввода названия */
-.form-input1[type=text]{
+.form-input__title{
     width: 78%;
     height: 90px;
     vertical-align: middle;
 }
 
 /* Окно ввода в таблице */
-.form-input2[type=text]{
+.form-input__stretched{
     width: 100%;
     vertical-align: middle;
 }
 
-.main-mini-i{
+.mini-icon{
     font-size: 20px;
     height: 20px;
     width: 20px;
 }
-
-.mini-i{
-    font-size: 20px;
-    height: 20px;
-    width: 20px;
-}
-.maxi-i{
-    font-size: 37px;
+.maxi-icon{
+    font-size: 40px;
     height: 40px;
     width: 40px;
 }
 
-.maxi-i:hover{
+.maxi-icon:hover{
     background-color: #82d5ce;
 }
-.mini-i:hover{
+.mini-icon:hover{
     background-color: #82d5ce;
 }
   
-.maxi-i:active{
+.maxi-icon:active{
     background-color: #77c4be;
 }
-.mini-i:active{
+.mini-icon:active{
     background-color: #77c4be;
 }
   
+.noHover{
+    pointer-events: none;
+}
 
+.margin-left-5 {
+    margin-left: 5px;
+}
 
-i{
+.text-align-left{
+    text-align: left !important;
+    padding-left: 5px;
+}
+
+.text-align-right{
+    text-align: right !important;
+    padding: 0px;
+    margin: 0px;
+}
+
+.icon{
     border-style: solid;
     border-width: 1px;
     background-color: #86e0d7;
     text-align: center;
-    margin: 5px;
 }
-.ii{
-    border-style: solid;
-    border-width: 1px;
-    background-color: #86e0d7;
-    text-align: center;
-    margin: 5px;
+
+/* Зачеркнутый текст */
+.strikethrought-text {
+    text-decoration: line-through;
+    opacity: 0.7;
 }
 
 /* Затемнение */
@@ -149,11 +153,10 @@ i{
     content: '';
     position:fixed;
     left: 0;
-	top: 0;
+    top: 0;
     width:100%;
     height:100%;
-	opacity: 0.7;
-
+    opacity: 0.7;
     justify-content:center;
     align-items:center;
     background:rgba(0,0,0,.7);
@@ -163,13 +166,13 @@ i{
 /* Окно выхода */
 .exit-comp{
     z-index: 1000;
-	opacity: 0.95;
+    opacity: 0.95;
     position:fixed;
     width: 250px;
     text-align: center;
     top: 20%;
-	left: calc(50% - 125px);
-	border: 1px solid #84CF6A;
+    left: calc(50% - 125px);
+    border: 1px solid #84CF6A;
     padding: 10px;
     background-color: #16c0af;
 }
@@ -178,10 +181,10 @@ i{
 .exit-save{
     font-size: 30px;
     z-index: 1000;
-	opacity: 1;
+    opacity: 1;
     position:fixed;
     top: 0px;
-	left: 20px;
+    left: 20px;
 }
 
 .exit-but{
@@ -193,7 +196,6 @@ i{
     width: 20px;
 }
 
-
 /* Кнопка */
 .button-send{
     background: linear-gradient(30deg, #84CF6A, #16C0B0);
@@ -201,8 +203,8 @@ i{
     height: 25px;
     font-family: inherit;
     font-size: 14px;
+    margin: 5px;
 }
-
 
 /* Настройка скролла */
 html {
@@ -230,3 +232,153 @@ border: 10px solid var(--background);
 background-color: var(--gray-500);
 }
 
+
+
+
+
+
+
+/* Название */
+.main{
+    text-align: center;
+    font-size: 30px;
+}
+
+/* Обязательное поле ввода */
+.required-input-field{
+    position: absolute;
+    z-index: 0;
+    opacity: 0.2;
+    background-color: #00000000;
+    filter: invert(70%) sepia(66%) saturate(489%) hue-rotate(54deg) brightness(101%) contrast(83%);    text-align: center;
+    margin-top: 12px;
+    margin-left: 10px;
+}
+
+.red-warning{
+    opacity: 1;
+    transition: 2s;
+}
+
+/* Изменение цвета строки при выборе */
+.select-this{
+    background-color: #83cf6a32;
+}
+
+.table-fixed{
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.th-main{
+    letter-spacing: 2px;
+    text-align: center;
+    background-color: #16c0af3c; 
+    padding: 5px;
+}
+
+.border-bottom{
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #83cf6a71;
+}
+
+.td-main{
+    letter-spacing: 1px;
+    padding: 5px;
+    vertical-align: middle;
+    overflow-x: auto;
+    max-width: 100%;
+
+}
+
+tbody tr:hover { 
+    background-color: #16c0af15; 
+}
+tbody tr:active { 
+    background-color: #83cf6a32; 
+}
+
+:root {
+  --form-width-transform-time: 1s;
+}
+
+@media (min-width: 650px){
+  .form{
+    max-width: 600px;
+    transition: var(--form-width-transform-time);
+  }
+}
+@media (min-width: 800px){
+  .form{
+    max-width: 750px;
+    transition: var(--form-width-transform-time);
+  }
+}
+@media (min-width: 950px){
+  .form{
+    max-width: 900px;
+    transition: var(--form-width-transform-time);
+  }
+}
+@media (min-width: 1200px){
+  .form{
+    max-width: 1100px;
+    transition: var(--form-width-transform-time);
+  }
+}
+
+/* Внутренность */
+.scroll-table-body {
+	max-height: 100%;
+	overflow-x: auto;
+}
+
+@media (min-height: 0px){
+  .form{
+    height: 450px;
+    transition: var(--form-width-transform-time);
+  }
+  .scroll-table-body {
+    height: 82%;
+    transition: var(--form-width-transform-time);
+  }
+  .form-scroll{
+    margin: 15px 5px;
+    max-height: 42%;
+    transition: var(--form-width-transform-time);
+  } 
+}
+@media (min-height: 500px){
+  .form{
+    height: 450px;
+    transition: var(--form-width-transform-time);
+  }
+  .scroll-table-body {
+    height: 82%;
+    transition: var(--form-width-transform-time);
+  }
+  .form-scroll{
+    margin: 15px 5px;
+    max-height: 42%;
+    transition: var(--form-width-transform-time);
+  } 
+}
+@media (min-height: 850px){
+  .form{
+    margin-top: 50px;
+    height: 800px;
+    transition: var(--form-width-transform-time);
+  }
+  .scroll-table-body {
+    height: 93.5%;
+    transition: var(--form-width-transform-time);
+  }
+  .form-scroll{
+    margin: 15px 5px;
+    max-height: 68%;
+    transition: var(--form-width-transform-time);
+
+  } 
+}

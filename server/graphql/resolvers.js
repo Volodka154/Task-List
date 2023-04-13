@@ -54,7 +54,6 @@ module.exports = {
         // Удаление мини заметки по id главной заметки и id мини заметки. Возвращаем главную заметку
         async deleteTask(_,{mainID}) {
             // удаление большой заметки
-            console.log('зашли в удаление')
             if (mainID){
                 await Task.deleteOne({ _id: mainID })   
                 return true

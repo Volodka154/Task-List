@@ -1,155 +1,136 @@
 <template>
-    <div    class="form form-bordered-text">
+    <div class="form form-bordered-text display-flex">
         <div class="form-change">
-            <table>
+            <table class="table-fixed">
                 <thead>
-                    <th class="th-l">Добавление задания</th>
-                    <th class="th-r"><i class="fa-solid fa-xmark maxi-i" 
-                        v-on:click="exit"
-                        title="Закрыть"></i></th>
+                    <th class="th-main text-align-left">Добавление задания</th>
+                    <th class="th-main text-align-right">
+                        <img class="icon maxi-icon" 
+                             src="CloseOutlined.svg"
+                             @click="onClickExitBtn"
+                             title="Закрыть">
+                    </th>
                 </thead>
             </table>    
         </div>
-
         <!--Задание-->
         <div class="row">
             <label>Задание: </label>
-            <i  v-if="!title"
-                class="fa-solid fa-star required-input-field"
-                :class="redWarning"></i>
-            <textarea   class="form-input form-input1"
+            <img v-if="!title"
+                 class="mini-icon required-input-field noHover"  
+                 src="StarFilled.svg"
+                 :class="redWarning">
+            <textarea   class="form-input form-input__title"
                         type="text"
                         v-model="title">
             </textarea>
         </div>
-
         <!--Кнопки (добавить удалить)-->
         <div>
             <label>Список задач: </label>
-            <i  class="fa-solid fa-plus maxi-i"
-                v-on:click="addOne"
-                title="Добавить задачу"></i>
-            <i  class="fa-solid fa-minus maxi-i"
-                v-on:click="delOne(indexForDelete)"
-                title="Удалить задачу"></i>
+            <img class="icon maxi-icon margin-left-5" 
+                 src="PlusOutlined.svg"
+                 @click="addOne"
+                 title="Добавить задачу">
+            <img class="icon maxi-icon margin-left-5" 
+                 src="MinusOutlined.svg"
+                 @click="delOne(selectedTaskIndex)"
+                 title="Удалить задачу">
         </div>
-
         <!--Таблица-->
         <div class="form-scroll form-bordered-text">
-            <table>
+            <table class="table-fixed">
                 <thead>
                 <tr>
-                    <th class="frst-coll">Название</th>
-                    <th>Содержание задачи</th>
+                    <th class="th-main frst-coll">Название</th>
+                    <th class="th-main">Содержание задачи</th>
                 </tr>
                 </thead>
-
             </table>
             <div class="scroll-table-body">
-                <table>
+                <table class="table-fixed">
                     <tbody> 
-                    <tr v-for="(task, index) in miniTask"
-                        v-bind:key="index"
-                        v-on:click="editIndex(index)"
-                        v-bind:class="deleteThis(indexForDelete,index)"
+                    <tr v-for="(task, index) in miniTaskList"
+                        :key="index"
+                        @click="editIndex(index)"
+                        :class="getSubTaskClassName(selectedTaskIndex,index)"
                         >
-                        <td class="frst-col">
-                            <textarea   class="form-input form-input2"
-                                        type="text"
-                                        v-model="task.title"
-                                        ></textarea>
+                        <td class="frst-col td-main">
+                            <textarea class="form-input form-input__stretched"
+                                      type="text"
+                                      v-model="task.title">
+                            </textarea>
                         </td>
-                        <td>
-                            <textarea   class="form-input form-input2"
-                                        type="text"
-                                        v-model="task.text"
-                                        ></textarea>
+                        <td class="td-main">
+                            <textarea class="form-input form-input__stretched"
+                                      type="text"
+                                      v-model="task.text">
+                            </textarea>
                         </td> 
                     </tr>
                     </tbody>
                 </table>            
             </div>
         </div>
-
         <!--Кнопки (отправить отменить)-->
-        <div class="th-r">
+        <div class="text-align-right">
             <button class="button-send"
-                    v-on:click="save">Сохранить</button>
+                    @click="onClickSaveBtn"
+                    >Сохранить
+            </button>
             <button class="button-send"
-                    v-on:click="exit">Отменить</button>
+                    @click="onClickExitBtn"
+                    >Отменить
+            </button>
         </div>
-
         <!-- Состояние загрузки в базу -->
-        <div    v-if="loadTask"
-                class="exit-back-color exit-save">
-                the saving process...
+        <div v-if="isLoadTask"
+             class="exit-back-color exit-save"
+             >the saving process...
         </div>
-
     </div>
     <!--Выход-->
-<div    class="exit-back-color"
-        v-if="AttemptToExit">
-    <div class="exit-comp">
-            <div><i class="fa-solid fa-xmark exit-but mini-i" v-on:click="AttemptToExit = false"></i></div>
+    <div class="exit-back-color"
+         v-if="isExitConfirmModalShow">
+        <div class="exit-comp">
+            <div>
+                <img class="icon mini-icon exit-but" 
+                     src="CloseOutlined.svg"
+                     @click="isExitConfirmModalShow = false"
+                     title="Закрыть">
+            </div>
             <p>Отменить все изменения?</p>
             <button class="button-send"
-                    v-on:click="save">Сохранить</button>
+                    @click="onClickSaveBtn"
+                    >Сохранить
+            </button>
             <button class="button-send"
-                    v-on:click="exit(true)">Отменить</button>
+                    @click="onClickExitBtn(true)"
+                    >Отменить
+            </button>
+        </div>
     </div>
-
-</div>
 </template>
 
 <script>
 import { useMutation } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-
-// мутация на создание главной заметки
-const CREATE_MAIN_TASK = gql`
-    mutation createMainTask($titleTaskInput: TitleTaskInput) {
-        createMainTask(titleTaskInput: $titleTaskInput) {
-            id
-            title
-            tasks {
-                _id
-                title
-                text
-                createAt
-            }
-        }   
-    } 
-`
-
-// мутация на создание мини заметки
-const CREATE_MINI_TASK = gql`
-    mutation CreateMiniTask($id: ID!, $titleTaskInput: TitleTaskInput, $textTaskInput: TextTaskInput) {
-        createMiniTask(ID: $id, titleTaskInput: $titleTaskInput, textTaskInput: $textTaskInput) {
-            title
-            tasks {
-                title
-                text
-                createAt
-            }
-        }
-    }
-`
+import { CREATE_MAIN_TASK, CREATE_MINI_TASK } from '../querys/mutations'
 
 export default {
     data(){
         const { mutate: createMain} = useMutation(CREATE_MAIN_TASK)
-        const { mutate: createMini, loading: loadTask } = useMutation(CREATE_MINI_TASK)
+        const { mutate: createMini, loading: isLoadTask } = useMutation(CREATE_MINI_TASK)
 
         return{
             createMain,           // мутация для создания главной заметки
             createMini,           // мутация для создания мини заметки
-            loadTask,
+            isLoadTask,
 
-            indexForDelete: null,
+            selectedTaskIndex: null,
             warning: false,
-            AttemptToExit: false,   // exit Window
+            isExitConfirmModalShow: false,   // exit Window
             title: '',
-            miniTask:[
+            miniTaskList:[
                 {
                 title: "",
                 text: "",
@@ -161,101 +142,78 @@ export default {
     },
     methods:{
         addOne(){
-            if(this.indexForDelete !== null){
-                this.miniTask.splice(this.indexForDelete + 1, 0, { title: '', text: '', done: false})
+            if(this.selectedTaskIndex !== null){
+                this.miniTaskList.splice(this.selectedTaskIndex + 1, 0, { title: '', text: '', done: false})
             }
             else{
-                this.miniTask.push({ title: '', text: '', done: false})
+                this.miniTaskList.push({ title: '', text: '', done: false})
             }
         },
         delOne(index){
             if (index !== null){
-                this.miniTask.splice(index,1)
-                this.indexForDelete = null
+                this.miniTaskList.splice(index,1)
+                this.selectedTaskIndex = null
             }
         },
-        deleteThis(index, ourindex){
-            if(index !== null && ourindex === index){
-                return 'delete-this'
-            }
-        },
-        async save(){
+        async onClickSaveBtn(){
             // только если название введено
             if(this.title){
+                console.log('onClickSaveBtn')
                 // очищаю массив от пустого пространства
-                for(let i = 0; i < this.miniTask.length; i++){
-                    if(this.miniTask[i].title === '' && this.miniTask[i].text === ''){
-                        this.miniTask.splice(i, 1)
-                        i--
+                this.miniTaskList = this.miniTaskList.filter(miniTaskItem => {
+                    // если нет названия для подзадачи, берем и назначаем 10 символов из ее описания
+                    if (!miniTaskItem.title && miniTaskItem.text){
+                        miniTaskItem.title = miniTaskItem.text.substring(0, 10) + '...'
                     }
-                }
-                // создаю главную задачу
-                const newMainObject = await this.createMain({
-                    titleTaskInput: {title: this.title}
-                }).then(response => {
-                    return response.data.createMainTask;
+                    return (miniTaskItem.text || miniTaskItem.title)
                 })
+                // создаю главную задачу
+                const newMainObject = (await this.createMain({
+                    titleTaskInput: {title: this.title}
+                })).data.createMainTask
                 // добавляем к ней подзадачи
-                for(let i = 0; i < this.miniTask.length; i++){
-                    await this.createMini({
+                await Promise.all(this.miniTaskList.map(
+                    miniTaskItem => this.createMini({
                         id: newMainObject.id,
-                        titleTaskInput: { title: this.miniTask[i].title},
-                        textTaskInput: { text: this.miniTask[i].text}
+                        titleTaskInput: { title: miniTaskItem.title },
+                        textTaskInput: { text: miniTaskItem.text }
                     })
-                }                
+                ))
                 // возвращаемся в app
                 this.$emit('click-save')
             }
             else{
-                this.AttemptToExit = false
+                this.isExitConfirmModalShow = false
                 this.warning = true
             }
         },
-        exit(data){
-            this.AttemptToExit = true
+        onClickExitBtn(data){
+            this.isExitConfirmModalShow = true
             if(data === true){
                 this.$emit('click-save', false)
             }
         },
         editIndex(index){
-            if(this.indexForDelete === index){
-                this.indexForDelete = null
+            if(this.selectedTaskIndex === index){
+                this.selectedTaskIndex = null
             }
             else {
-                this.indexForDelete = index
+                this.selectedTaskIndex = index
             }
         },
-
+        getSubTaskClassName(index, ourindex){
+            return{
+                'select-this' : index !== null && ourindex === index
+            }
+        },
     },
     computed:{
         redWarning(){
             if(this.warning){
-                return 'red-warning'
+                return 'red-warning animated flash'
             }
             return ''
         },
     }
 }
 </script>
-
-<style>
-.red-warning{
-    opacity: 1;
-    transition: 2s;
-}
-
-.th-l{
-    text-align: left;
-    padding-left: 5px;
-}
-
-.th-r{
-    text-align: right;
-    padding: 0px;
-}
-
-button{
-    margin: 5px;
-}
-
-</style>
