@@ -167,7 +167,7 @@ body {
 .exit-comp{
     z-index: 1000;
     opacity: 0.95;
-    position:fixed;
+    position: fixed;
     width: 250px;
     text-align: center;
     top: 20%;

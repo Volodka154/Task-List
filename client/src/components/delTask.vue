@@ -8,7 +8,7 @@
                      @click="onClickCancelDeleteBtn"
                      title="Закрыть">
         </div>
-        <p>Удалить задание с названием "{{ title }}"?</p>
+        <p>Удалить задание с названием "{{ title.length > 15 ? title.substring(0, 15) + '...' : title }}"?</p>
         <button class="button-send"
                 v-on:click="onClickConfirmDeleteBtn"
                 >Удалить
@@ -23,19 +23,19 @@
 
 <script>
 import { useMutation } from '@vue/apollo-composable'
-
 import { DELETE_MAIN } from '../querys/mutations'
+import { router } from '../routes.js'
 
 export default {
-    props: ['ID', 'titles'],
+    props: ['propsId', 'propsTitle'],
     data(){
         // удаление заметки
         const { mutate: deleteMain } = useMutation(DELETE_MAIN)
         return {
             deleteMain,
 
-            id: this.ID,
-            title: this.titles
+            id: this.propsId,
+            title: this.propsTitle
         }
     },
     methods: {
@@ -43,10 +43,10 @@ export default {
           await this.deleteMain({
             mainId: this.id,
           })
-          this.$emit('click-save', false)
+          this.$emit('closed-window')
         },
         onClickCancelDeleteBtn(){
-          this.$emit('click-save', false)
+          this.$emit('closed-window')
         }
     }
 }

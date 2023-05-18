@@ -3,11 +3,14 @@ const {HTTP_LINK} = require('../../environment');
 import './style/2_new.css'
 import './style/animate.css'
 
-import { createApp, provide, h } from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 
 import { DefaultApolloClient } from '@vue/apollo-composable'
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+
+import {router} from './routes.js'
+
 const cache = new InMemoryCache()
 
 const httpLink = createHttpLink({
@@ -19,11 +22,7 @@ const apolloClient = new ApolloClient({
   cache,
 })
 
-const app = createApp({
-  setup () {
-    provide(DefaultApolloClient, apolloClient)
-  },
-  render: () => h(App),
-})
-
+const app = createApp(App)
+app.provide(DefaultApolloClient, apolloClient)
+app.use(router)
 app.mount('#app');

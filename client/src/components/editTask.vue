@@ -7,7 +7,7 @@
                     <th class="th-main text-align-right">
                         <img class="icon maxi-icon" 
                              src="CloseOutlined.svg"
-                             @click="onClickExitBtn"
+                             @click="onClickExitBtn(false)"
                              title="Закрыть">
                     </th>
                 </thead>
@@ -94,7 +94,7 @@
                     >Сохранить
             </button>
             <button class="button-send"
-                    v-on:click="onClickExitBtn"
+                    v-on:click="onClickExitBtn(false)"
                     >Отменить
             </button>
         </div>
@@ -125,9 +125,10 @@
 <script>
 import { useMutation } from '@vue/apollo-composable'
 import { EDIT_TASK } from '../querys/mutations'
+import { router } from '../routes'
 
 export default {
-    props: ['ID', 'titles', 'taskss'],
+    props: ['propsId', 'propsTitle', 'propsTasks'],
     data(){
         const { mutate: editMain, loading: isLoadTask } = useMutation(EDIT_TASK)
 
@@ -138,9 +139,9 @@ export default {
             selectedTaskIndex: null,
             warning: false,
             isExitConfirmModalShow: false,   // exit Window
-            id: this.ID,
-            title: this.titles,
-            copyOfMiniTaskList: JSON.parse(JSON.stringify(this.taskss))
+            id: this.propsId,
+            title: this.propsTitle,
+            copyOfMiniTaskList: this.propsTasks,
         }
     },
     methods:{
@@ -158,24 +159,18 @@ export default {
                 this.selectedTaskIndex = null
             }
         },
-        onClickExitBtn(if_save){
+        onClickExitBtn(isExit){
             this.isExitConfirmModalShow = true
-            if(if_save === true){
-                this.$emit('click-save', false)
+            if(isExit){
+                router.push('/tasks')
             }
         },
         editIndex(index){
-            if(this.selectedTaskIndex === index){
-                this.selectedTaskIndex = null
-            }
-            else {
-                this.selectedTaskIndex = index
-            }
+            this.selectedTaskIndex = (this.selectedTaskIndex === index) ? null : index
         },
         async onClickSaveBtn(){
             // только если название введено
             if(this.title){
-                console.log('onClickSaveBtn')
                 // очищаю массив от пустого пространства
                 this.copyOfMiniTaskList = this.copyOfMiniTaskList.filter(miniTaskItem => {
                     // если нет названия для подзадачи, берем и назначаем 10 символов из ее описания
@@ -200,7 +195,8 @@ export default {
                     },
                     mass: massiv      
                 })
-                this.$emit('click-save')
+                // возвращаемся в app
+                router.push('/tasks')
             }
             else{
                 this.isExitConfirmModalShow = false

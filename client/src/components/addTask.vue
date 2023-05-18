@@ -7,7 +7,7 @@
                     <th class="th-main text-align-right">
                         <img class="icon maxi-icon" 
                              src="CloseOutlined.svg"
-                             @click="onClickExitBtn"
+                             @click="onClickExitBtn(false)"
                              title="Закрыть">
                     </th>
                 </thead>
@@ -79,7 +79,7 @@
                     >Сохранить
             </button>
             <button class="button-send"
-                    @click="onClickExitBtn"
+                    @click="onClickExitBtn(false)"
                     >Отменить
             </button>
         </div>
@@ -115,6 +115,8 @@
 <script>
 import { useMutation } from '@vue/apollo-composable'
 import { CREATE_MAIN_TASK, CREATE_MINI_TASK } from '../querys/mutations'
+
+import { router } from '../routes'
 
 export default {
     data(){
@@ -158,7 +160,6 @@ export default {
         async onClickSaveBtn(){
             // только если название введено
             if(this.title){
-                console.log('onClickSaveBtn')
                 // очищаю массив от пустого пространства
                 this.miniTaskList = this.miniTaskList.filter(miniTaskItem => {
                     // если нет названия для подзадачи, берем и назначаем 10 символов из ее описания
@@ -180,32 +181,27 @@ export default {
                     })
                 ))
                 // возвращаемся в app
-                this.$emit('click-save')
+                router.push('/tasks')
             }
             else{
                 this.isExitConfirmModalShow = false
                 this.warning = true
             }
         },
-        onClickExitBtn(data){
+        onClickExitBtn(isExit){
             this.isExitConfirmModalShow = true
-            if(data === true){
-                this.$emit('click-save', false)
+            if(isExit){
+                router.push('/tasks')
             }
         },
         editIndex(index){
-            if(this.selectedTaskIndex === index){
-                this.selectedTaskIndex = null
-            }
-            else {
-                this.selectedTaskIndex = index
-            }
+            this.selectedTaskIndex = (this.selectedTaskIndex === index) ? null : index
         },
         getSubTaskClassName(index, ourindex){
             return{
                 'select-this' : index !== null && ourindex === index
             }
-        },
+        }
     },
     computed:{
         redWarning(){
@@ -213,7 +209,7 @@ export default {
                 return 'red-warning animated flash'
             }
             return ''
-        },
+        }
     }
 }
 </script>
